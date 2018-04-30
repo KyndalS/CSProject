@@ -1,4 +1,5 @@
 import javafx.animation.PathTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -12,8 +13,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -23,8 +22,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Terrra extends Application {
-	
-
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -40,12 +37,6 @@ public class Terrra extends Application {
 		circle1.setFill(new ImagePattern(ship1));
 		circle1.setStroke(Color.ANTIQUEWHITE);
 
-		
-		//Shots 
-		//Circle shots = new Circle(50, 30, 10);
-		//shots.setFill(Color.YELLOW);
-		//shots.setLayoutX(circle.getCenterX());
-	
 		
 		HBox pfb = new HBox(10);
 		pfb.setAlignment(Pos.CENTER);
@@ -103,20 +94,40 @@ public class Terrra extends Application {
 	      private Circle circle = new Circle();
 	      Image ship1 = new Image("http://www.freepngimg.com/thumb/spaceship/24752-5-spaceship-thumb.png");
 	      private Circle shots = new Circle();
+	      private Line line = new Line();
+	    //Animation
+			PathTransition pt = new PathTransition();
+			
+			
 	      
 	      public BallControl() {
 	        getChildren().addAll(circle, shots);
+	        
 	        circle.setCenterX(225.0f);
 	        circle.setCenterY(250.0f);
 	        circle.setRadius(20.0f);
 	        circle.setStroke(Color.TRANSPARENT);
 	        circle.setFill(new ImagePattern(ship1));
+	        	
 	        shots.setCenterX(225.0f);
-	        shots.setCenterY(210.0f);
+	        shots.setCenterY(215.0f);
 	        shots.setRadius(10);
 	        shots.setFill(Color.YELLOW);
 	        shots.setStroke(Color.BLACK);
 	        
+	        line.setStartX(circle.getCenterX());
+	        line.setEndX(circle.getCenterX());
+	        line.setStartY(215.0f);
+	        line.setEndY(15.0f);
+	       
+	       // line.setStrokeWidth(2.0);
+	        
+	        pt.setNode(shots);
+			pt.setPath(line);
+			pt.setDuration(Duration.millis(4000));
+			pt.setCycleCount(Timeline.INDEFINITE);
+			pt.play();
+			
 	      }
 
 	      public void setStroke(Color antiquewhite) {
@@ -145,15 +156,19 @@ public class Terrra extends Application {
 	        circle.setCenterY(y);
 	        shots.setCenterX(x);
 	        shots.setCenterX(y);
+	    
 	      }   
 	     
 	      public void left() {
 	        circle.setCenterX(circle.getCenterX() - 10);
 	        shots.setCenterX(circle.getCenterX()- 10);
+	       line.setStartX(circle.getCenterX() - 10);
 	      }       
 	      public void right() {
 	        circle.setCenterX(circle.getCenterX() + 10);
 	        shots.setCenterX(circle.getCenterX()+ 10);
+	       line.setStartX(circle.getCenterX() + 10);
+	        
 	      }
 	      }
 
