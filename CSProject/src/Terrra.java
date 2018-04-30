@@ -1,4 +1,5 @@
 import javafx.animation.PathTransition;
+import javafx.scene.Node;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -29,13 +30,9 @@ public class Terrra extends Application {
 	}
 	
 	private BallControl circle1 = new BallControl();
-	Image ship1 = new Image("http://www.freepngimg.com/thumb/spaceship/24752-5-spaceship-thumb.png");
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
-		circle1.setFill(new ImagePattern(ship1));
-		circle1.setStroke(Color.ANTIQUEWHITE);
 
 		
 		HBox pfb = new HBox(10);
@@ -45,100 +42,115 @@ public class Terrra extends Application {
 		pfb.getChildren().addAll(left, right);
 		pfb.setStyle("-fx-border-color: blue");
 		
-		left.setOnAction(new handler1());
-		right.setOnAction(new handler2());
-	
-		
-	
-		/*GridPane gp = new GridPane();
-		circlepane.setLayoutX(250.0f);
-		shots.setLayoutX(250.0f);
-		shots.setLayoutY(170.0f);
-		gp.getChildren().addAll(circlepane, shots);
-		gp.setAlignment(Pos.BOTTOM_CENTER);
-		*/
 	
 		
 		BorderPane borderPane = new BorderPane();
 		borderPane.setBottom(pfb);
-		borderPane.setCenter(circle1);
+		borderPane.setCenter(new BallControl());
 		
+		left.setOnAction(new leftHandler((BallControl)borderPane.getCenter()));
+		right.setOnAction(new rightHandler((BallControl)borderPane.getCenter()));
 		Scene scene = new Scene(borderPane, 450, 300);
 		primaryStage.setTitle("Galaga");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
 	}
-	class handler1 implements EventHandler<ActionEvent> {
-
+	class leftHandler implements EventHandler<ActionEvent> {
+		BallControl p;
+		public leftHandler(BallControl p) {
+			this.p = p;
+		}
 		@Override
 		public void handle(ActionEvent arg0) {
 			// TODO Auto-generated method stub
-			circle1.left();
+		
+			p.left();
+			//p.shots();
+			p.path();
+
 		}
 		
 	}
-	class handler2 implements EventHandler<ActionEvent> {
-
+	class rightHandler implements EventHandler<ActionEvent> {
+		BallControl p;
+		public rightHandler(BallControl p) {
+			this.p = p;
+		}
 		@Override
 		public void handle(ActionEvent event) {
 			// TODO Auto-generated method stub
-			circle1.right();
+		
+			p.right();
+			//p.shots();
+			p.path();
 		}
 		
 	}
+	
 	class BallControl extends Pane {
 	      public final double radius = 20;
 	      private double x = radius, y = radius;
 	      private double dx = 1, dy = 1;
-	      private Circle circle = new Circle();
-	      Image ship1 = new Image("http://www.freepngimg.com/thumb/spaceship/24752-5-spaceship-thumb.png");
-	      private Circle shots = new Circle();
-	      private Line line = new Line();
-	    //Animation
-			PathTransition pt = new PathTransition();
-			
-			
 	      
-	      public BallControl() {
-	        getChildren().addAll(circle, shots);
-	        
-	        circle.setCenterX(225.0f);
-	        circle.setCenterY(250.0f);
-	        circle.setRadius(20.0f);
-	        circle.setStroke(Color.TRANSPARENT);
-	        circle.setFill(new ImagePattern(ship1));
+	      private Circle ship; 
+	      Circle s = new Circle();
+	      private Line line = new Line();
+	      PathTransition pt = new PathTransition();
 	        	
-	        shots.setCenterX(225.0f);
+	       public Circle initialShip() {
+	    	ship = new Circle(); 
+	    	Image ship1 = new Image("http://www.freepngimg.com/thumb/spaceship/24752-5-spaceship-thumb.png");
+	    	ship.setCenterX(225.0f);
+	        ship.setCenterY(250.0f);
+	        ship.setRadius(20.0f);
+	        ship.setStroke(Color.TRANSPARENT);
+	        ship.setFill(new ImagePattern(ship1));
+			return ship;
+	       }		
+	       
+	      public Circle shots() {
+	  		Circle shots = new Circle();
+	 		shots.setCenterX(ship.getCenterX());
 	        shots.setCenterY(215.0f);
 	        shots.setRadius(10);
 	        shots.setFill(Color.YELLOW);
 	        shots.setStroke(Color.BLACK);
-	        
-	        line.setStartX(circle.getCenterX());
-	        line.setEndX(circle.getCenterX());
+			return shots;		
+	      }
+	      public BallControl() { //Initial 
+	       getChildren().addAll(initialShip());
+	       ship = (Circle)getChildren().get(0);
+	       
+	      }	 
+	      public void path() {
+	    	Line line = new Line();
+	    	 line.setStartX(ship.getCenterX());
+	        line.setEndX(ship.getCenterX());
 	        line.setStartY(215.0f);
 	        line.setEndY(15.0f);
-	       
-	       // line.setStrokeWidth(2.0);
 	        
-	        pt.setNode(shots);
+	        PathTransition pt = new PathTransition();
+	        pt.setNode(shots());
+	        getChildren().add(pt.getNode());
 			pt.setPath(line);
 			pt.setDuration(Duration.millis(4000));
-			pt.setCycleCount(Timeline.INDEFINITE);
+			pt.setCycleCount(1);
+			pt.setOnFinished( new removeShots());
 			pt.play();
-			
-	      }
+	      } 
+	      class removeShots implements EventHandler<ActionEvent> {
 
-	      public void setStroke(Color antiquewhite) {
+		@Override
+		public void handle(ActionEvent arg0) {
 			// TODO Auto-generated method stub
+			PathTransition pt = (PathTransition)arg0.getSource();
+			Node shot = pt.getNode();
+			getChildren().remove(shot);
 			
 		}
-
-		public void setFill(ImagePattern imagePattern) {
-			// TODO Auto-generated method stub
-			
-		}
+		
+	}
 
 		protected void moveBall() {
 	        // Check boundaries
@@ -152,24 +164,35 @@ public class Terrra extends Application {
 	        // Adjust ball position
 	        x += dx;
 	        y += dy;
-	        circle.setCenterX(x);
-	        circle.setCenterY(y);
-	        shots.setCenterX(x);
-	        shots.setCenterX(y);
+	        ship.setCenterX(x);
+	        ship.setCenterY(y);
+	        //shots.setCenterX(x);
+	        //shots.setCenterX(y);
 	    
 	      }   
 	     
 	      public void left() {
-	        circle.setCenterX(circle.getCenterX() - 10);
-	        shots.setCenterX(circle.getCenterX()- 10);
-	       line.setStartX(circle.getCenterX() - 10);
+	        ship.setCenterX(ship.getCenterX() - 10);
+	       // shots();
+	        //path();
+	        //shots.setCenterX(circle.getCenterX()- 10);
+	      // line.setStartX(circle.getCenterX() - 10);
 	      }       
 	      public void right() {
-	        circle.setCenterX(circle.getCenterX() + 10);
-	        shots.setCenterX(circle.getCenterX()+ 10);
-	       line.setStartX(circle.getCenterX() + 10);
+	        ship.setCenterX(ship.getCenterX() + 10);
+	       // shots();
+	        //path();
+	        //shots.setCenterX(circle.getCenterX()+ 10);
+	      // line.setStartX(circle.getCenterX() + 10);
 	        
 	      }
+	      public void setStroke(Color antiquewhite) {
+	    	  
+		}
+
+		public void setFill(ImagePattern imagePattern) {
+			
+		}
 	      }
 
 	/* class CirclePane extends StackPane{
