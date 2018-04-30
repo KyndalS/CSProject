@@ -30,20 +30,20 @@ public class Terrra extends Application {
 		// TODO Auto-generated method stub
 		launch();
 	}
-		private CirclePane circlepane = new CirclePane();
+	
+	private BallControl circle1 = new BallControl();
 	Image ship1 = new Image("http://www.freepngimg.com/thumb/spaceship/24752-5-spaceship-thumb.png");
-	//protected ImageView ship = new ImageView(new Image("http://www.freepngimg.com/thumb/spaceship/24752-5-spaceship-thumb.png"));
-	Circle circle = new Circle(50,30,20);
+	
 	@Override
-public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) throws Exception {
 		
-		circle.setFill(new ImagePattern(ship1));
-		circle.setStroke(Color.ANTIQUEWHITE);
-	//	circlepane.getChildren().add(circle);
+		circle1.setFill(new ImagePattern(ship1));
+		circle1.setStroke(Color.ANTIQUEWHITE);
+
 		
 		//Shots 
-		Circle shots = new Circle(50, 30, 10);
-		shots.setFill(Color.YELLOW);
+		//Circle shots = new Circle(50, 30, 10);
+		//shots.setFill(Color.YELLOW);
 		//shots.setLayoutX(circle.getCenterX());
 	
 		
@@ -56,15 +56,21 @@ public void start(Stage primaryStage) throws Exception {
 		
 		left.setOnAction(new handler1());
 		right.setOnAction(new handler2());
+	
 		
-		GridPane gp = new GridPane();
+	
+		/*GridPane gp = new GridPane();
+		circlepane.setLayoutX(250.0f);
+		shots.setLayoutX(250.0f);
+		shots.setLayoutY(170.0f);
 		gp.getChildren().addAll(circlepane, shots);
 		gp.setAlignment(Pos.BOTTOM_CENTER);
+		*/
 	
 		
 		BorderPane borderPane = new BorderPane();
 		borderPane.setBottom(pfb);
-		borderPane.setCenter(gp);
+		borderPane.setCenter(circle1);
 		
 		Scene scene = new Scene(borderPane, 450, 300);
 		primaryStage.setTitle("Galaga");
@@ -77,7 +83,7 @@ public void start(Stage primaryStage) throws Exception {
 		@Override
 		public void handle(ActionEvent arg0) {
 			// TODO Auto-generated method stub
-			circlepane.left();
+			circle1.left();
 		}
 		
 	}
@@ -86,16 +92,78 @@ public void start(Stage primaryStage) throws Exception {
 		@Override
 		public void handle(ActionEvent event) {
 			// TODO Auto-generated method stub
-			circlepane.right();
+			circle1.right();
 		}
 		
 	}
-	class CirclePane extends Pane{
+	class BallControl extends Pane {
+	      public final double radius = 20;
+	      private double x = radius, y = radius;
+	      private double dx = 1, dy = 1;
+	      private Circle circle = new Circle();
+	      Image ship1 = new Image("http://www.freepngimg.com/thumb/spaceship/24752-5-spaceship-thumb.png");
+	      private Circle shots = new Circle();
+	      
+	      public BallControl() {
+	        getChildren().addAll(circle, shots);
+	        circle.setCenterX(225.0f);
+	        circle.setCenterY(250.0f);
+	        circle.setRadius(20.0f);
+	        circle.setStroke(Color.TRANSPARENT);
+	        circle.setFill(new ImagePattern(ship1));
+	        shots.setCenterX(225.0f);
+	        shots.setCenterY(210.0f);
+	        shots.setRadius(10);
+	        shots.setFill(Color.YELLOW);
+	        shots.setStroke(Color.BLACK);
+	        
+	      }
+
+	      public void setStroke(Color antiquewhite) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void setFill(ImagePattern imagePattern) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		protected void moveBall() {
+	        // Check boundaries
+	        if (x < radius || x > getWidth() - radius) {
+	          dx = 0; // Change ball move direction
+	        }
+	        if (y < radius || y > getHeight() - radius) {
+	          dy = 0; // Change ball move direction
+	        }
+
+	        // Adjust ball position
+	        x += dx;
+	        y += dy;
+	        circle.setCenterX(x);
+	        circle.setCenterY(y);
+	        shots.setCenterX(x);
+	        shots.setCenterX(y);
+	      }   
+	     
+	      public void left() {
+	        circle.setCenterX(circle.getCenterX() - 10);
+	        shots.setCenterX(circle.getCenterX()- 10);
+	      }       
+	      public void right() {
+	        circle.setCenterX(circle.getCenterX() + 10);
+	        shots.setCenterX(circle.getCenterX()+ 10);
+	      }
+	      }
+
+	/* class CirclePane extends StackPane{
 		
 		
 		Image ship1 = new Image("http://www.freepngimg.com/thumb/spaceship/24752-5-spaceship-thumb.png");
 		Circle circle = new Circle(50,30,20);
 		Circle shots = new Circle(50, 30, 10);
+	
 		
 		public CirclePane() {
 			getChildren().add(circle);
@@ -120,6 +188,7 @@ public void start(Stage primaryStage) throws Exception {
 	// Attach shots/ path to position of circle 	
 		
   }
+  */
 }
 
 /*protected BorderPane getPane() {
