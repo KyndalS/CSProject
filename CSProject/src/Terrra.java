@@ -1,3 +1,5 @@
+import java.util.Random;
+
 import javafx.animation.PathTransition;
 import javafx.scene.Node;
 import javafx.animation.Timeline;
@@ -42,11 +44,90 @@ public class Terrra extends Application {
 		pfb.getChildren().addAll(left, right);
 		pfb.setStyle("-fx-border-color: blue");
 		
-	
+		Pane pfAliens = new Pane();
+		ImageView a1 = new ImageView(new Image("https://images.vectorhq.com/images/previews/413/alien-space-ship-icon-b-w-psd-438456.png"));
+		ImageView a2 = new ImageView(new Image("https://images.vectorhq.com/images/previews/413/alien-space-ship-icon-b-w-psd-438456.png"));
+		ImageView a3 = new ImageView(new Image("https://images.vectorhq.com/images/previews/413/alien-space-ship-icon-b-w-psd-438456.png"));
+		ImageView a4 = new ImageView(new Image("https://images.vectorhq.com/images/previews/413/alien-space-ship-icon-b-w-psd-438456.png"));
+		ImageView a5 = new ImageView(new Image("https://images.vectorhq.com/images/previews/413/alien-space-ship-icon-b-w-psd-438456.png"));
+		a1.setPreserveRatio(true);
+		a2.setPreserveRatio(true);
+		a3.setPreserveRatio(true);
+		a4.setPreserveRatio(true);
+		a5.setPreserveRatio(true);
+		
+		a1.setFitHeight(20); 
+		a2.setFitHeight(20); 
+		a3.setFitHeight(20); 
+		a4.setFitHeight(20); 
+		a5.setFitHeight(20);
+		a1.setFitWidth(20); 
+		a2.setFitHeight(20); 
+		a3.setFitHeight(20); 
+		a4.setFitHeight(20); 
+		a5.setFitHeight(20);
+		
+	//	alien1.setLayoutX(ran);
+		/*ImageView alien6 = new ImageView(new Image("https://images.vectorhq.com/images/previews/413/alien-space-ship-icon-b-w-psd-438456.png"));
+		ImageView alien4 = new ImageView(new Image("https://www.freeiconspng.com/uploads/spaceship-png-icon-5.png"));
+		ImageView alien6 = new ImageView(new Image("https://images.vectorhq.com/images/previews/413/alien-space-ship-icon-b-w-psd-438456.png"));
+		ImageView alien5 = new ImageView(new Image("https://www.freeiconspng.com/uploads/spaceship-png-icon-5.png"));
+		ImageView alien6 = new ImageView(new Image("https://images.vectorhq.com/images/previews/413/alien-space-ship-icon-b-w-psd-438456.png"));
+		*/
+		Random random = new Random();
+		//int ranX = random.nextInt(430-1); // random value from 0 to width
+		//int ranY = random.nextInt(150-1);
+		a1.setLayoutX(random.nextInt(430-1));
+		a1.setLayoutY(random.nextInt(150-1));
+		a2.setLayoutX(random.nextInt(450-1));
+		a2.setLayoutY(random.nextInt(150-1));
+		a3.setLayoutX(random.nextInt(450-1));
+		a3.setLayoutY(random.nextInt(150-1));
+		a4.setLayoutX(random.nextInt(450-1));
+		a4.setLayoutY(random.nextInt(150-1));
+		a5.setLayoutX(random.nextInt(450-1));
+		a5.setLayoutY(random.nextInt(150-1));
+		
+		Line aLine = new Line();
+		aLine.setStartX(a1.getLayoutX());
+		aLine.setStartY(a1.getLayoutY());
+		aLine.setEndX(a1.getLayoutX() - 20.0f);
+		aLine.setEndY(a1.getLayoutY());
+		
+		/*Line bLine = new Line();
+		bLine.setStartX(a2.getLayoutX());
+		bLine.setStartY(a2.getLayoutY());
+		bLine.setEndX(a2.getLayoutX() - 20.0f);
+		bLine.setEndY(a2.getLayoutY());
+		*/
+		PathTransition aMoves = new PathTransition();
+		aMoves.setNode(a1);
+		aMoves.setPath(aLine);
+		aMoves.setDuration(Duration.millis(4000));
+		aMoves.setCycleCount(Timeline.INDEFINITE);
+		aMoves.play();
+		/*PathTransition bMoves = new PathTransition();
+		aMoves.setNode(a2);
+		aMoves.setPath(bLine);
+		aMoves.setDuration(Duration.millis(4000));
+		aMoves.setCycleCount(Timeline.INDEFINITE);
+		aMoves.play();
+		*/
+		pfAliens.getChildren().addAll(a1, a2, a3, a4, a5);
+		
+		
+		GridPane upperAliens = new GridPane();
+		upperAliens.getChildren().add(pfAliens);
+		
+		
+		
 		
 		BorderPane borderPane = new BorderPane();
 		borderPane.setBottom(pfb);
 		borderPane.setCenter(new BallControl());
+		//borderPane.setCenter(upperAliens);
+		borderPane.getChildren().add(upperAliens);
+		//BorderPane.setAlignment(upperAliens, pos.);
 		
 		left.setOnAction(new leftHandler((BallControl)borderPane.getCenter()));
 		right.setOnAction(new rightHandler((BallControl)borderPane.getCenter()));
@@ -66,7 +147,6 @@ public class Terrra extends Application {
 			// TODO Auto-generated method stub
 		
 			p.left();
-			//p.shots();
 			p.path();
 
 		}
@@ -82,7 +162,6 @@ public class Terrra extends Application {
 			// TODO Auto-generated method stub
 		
 			p.right();
-			//p.shots();
 			p.path();
 		}
 		
@@ -173,17 +252,10 @@ public class Terrra extends Application {
 	     
 	      public void left() {
 	        ship.setCenterX(ship.getCenterX() - 10);
-	       // shots();
-	        //path();
-	        //shots.setCenterX(circle.getCenterX()- 10);
-	      // line.setStartX(circle.getCenterX() - 10);
+	       
 	      }       
 	      public void right() {
 	        ship.setCenterX(ship.getCenterX() + 10);
-	       // shots();
-	        //path();
-	        //shots.setCenterX(circle.getCenterX()+ 10);
-	      // line.setStartX(circle.getCenterX() + 10);
 	        
 	      }
 	      public void setStroke(Color antiquewhite) {
